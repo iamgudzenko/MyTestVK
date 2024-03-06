@@ -1,20 +1,46 @@
 package com.example.mytestvk
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mytestvk.databinding.ActivityMainBinding
+import com.example.mytestvk.model.Product
+import com.example.mytestvk.presenter.GetProducts
+import com.example.mytestvk.presenter.IGetProducts
+import com.example.mytestvk.view.IUploadedProductsView
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), IUploadedProductsView {
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var getProducts: IGetProducts
+    private lateinit var adapter: ProductAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        getProducts = GetProducts(this, applicationContext)
+
+        adapter = ProductAdapter(applicationContext, object : ProductActionListener{
+            override fun goToProductInfo(product: Product) {
+
+            }
+
+        })
+        getProducts.loadProducts(20,0)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun loadProductsListSuccess(listProducts: ArrayList<Product>) {
+        adapter.products = listProducts
+        binding.recyclerViewProducts.setLayoutManager(GridLayoutManager(this, 2))
+        binding.recyclerViewProducts.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun loadProductsListError(error: String) {
+        Log.d("isResult", "ERROR")
     }
 }
