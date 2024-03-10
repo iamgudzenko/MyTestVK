@@ -11,6 +11,9 @@ import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
 import com.example.mytestvk.databinding.ItemProductBinding
 import com.example.mytestvk.model.Product
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 interface ProductActionListener {
     fun goToProductInfo(product: Product)
@@ -41,14 +44,15 @@ class ProductAdapter(private val context: Context, private val actionListener: P
             holder.itemView.tag = product
             title.text = product?.title
             descr.text = product?.description
+            CoroutineScope(Dispatchers.IO).launch {
+                val imageRequest = ImageRequest(product!!.thumbnail, {
+                    photoImageView.setImageBitmap(it)
+                }, 0, 0, null, Bitmap.Config.ARGB_8888, {
 
-            val imageRequest = ImageRequest(product!!.thumbnail, {
-                photoImageView.setImageBitmap(it)
-            }, 0, 0, null, Bitmap.Config.ARGB_8888, {
+                })
 
-            })
-
-            Volley.newRequestQueue(context).add(imageRequest)
+                Volley.newRequestQueue(context).add(imageRequest)
+            }
         }
     }
 

@@ -7,25 +7,36 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.mytestvk.model.Product
 import com.example.mytestvk.view.IUploadedProductsView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class GetProducts (val uploadProductsView: IUploadedProductsView, val context: Context): IGetProducts{
-    override fun loadProducts(count: Int, skip: Int) {
-        val url = "https://dummyjson.com/products?skip=$skip&$count=20"
-        val queue = Volley.newRequestQueue(context)
-        val request = StringRequest(
-            Request.Method.GET,
-            url,
-            {
-                    result -> parseProducts(result)
+    override fun loadProducts(page:Int) {
+        val skip = 20 * page
+        CoroutineScope(Dispatchers.IO).launch {
+//            delay(20000)
 
-            },
-            {
-                    error -> uploadProductsView.loadProductsListError("Error")
+            val url = "https://dummyjson.com/products?skip=$skip&limit=20"
+            val queue = Volley.newRequestQueue(context)
+            val request = StringRequest(
+                Request.Method.GET,
+                url,
+                {
+                        result -> parseProducts(result)
 
-            }
-        )
-        queue.add(request)
+                },
+                {
+                        error -> uploadProductsView.loadProductsListError(error.toString())
+
+                }
+            )
+            queue.add(request)
+
+        }
+
     }
 
     fun parseProducts(result: String) {
