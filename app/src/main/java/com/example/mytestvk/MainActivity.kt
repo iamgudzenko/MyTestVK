@@ -39,24 +39,26 @@ class MainActivity : AppCompatActivity(), IUploadedProductsView {
         })
         if(isOnline(applicationContext)) {
             getProducts.loadProducts(page)
-        } else {
-            Toast.makeText(this, "Нет интернета, лох 1488", Toast.LENGTH_SHORT).show()
         }
 
 
         binding.backPageButton.setOnClickListener {
-            binding.progressLoad.visibility = View.VISIBLE
-            binding.scrollViewProducts.visibility = View.GONE
-            page -= 1
-            binding.infoPageTextView.text = "$page из 5"
-            getProducts.loadProducts(page)
+            if(isOnline(applicationContext)) {
+                binding.progressLoad.visibility = View.VISIBLE
+                binding.scrollViewProducts.visibility = View.GONE
+                page -= 1
+                binding.infoPageTextView.text = "$page из 5"
+                getProducts.loadProducts(page)
+            }
         }
         binding.nextPageButton.setOnClickListener {
-            binding.progressLoad.visibility = View.VISIBLE
-            binding.scrollViewProducts.visibility = View.GONE
-            page += 1
-            binding.infoPageTextView.text = "$page из 5"
-            getProducts.loadProducts(page)
+            if(isOnline(applicationContext)) {
+                binding.progressLoad.visibility = View.VISIBLE
+                binding.scrollViewProducts.visibility = View.GONE
+                page += 1
+                binding.infoPageTextView.text = "$page из 5"
+                getProducts.loadProducts(page)
+            }
         }
     }
 
@@ -83,8 +85,7 @@ class MainActivity : AppCompatActivity(), IUploadedProductsView {
     }
 
     override fun loadProductsListError(error: String) {
-        Toast.makeText(this, "$error", Toast.LENGTH_SHORT).show()
-        Log.d("isResult", "ERROR")
+        Log.d("isResult", error)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -116,6 +117,7 @@ class MainActivity : AppCompatActivity(), IUploadedProductsView {
                 }
             }
         }
+        Toast.makeText(this, "Нет интернета", Toast.LENGTH_SHORT).show()
         return false
     }
 }
