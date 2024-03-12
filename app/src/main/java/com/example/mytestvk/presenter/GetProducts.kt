@@ -1,8 +1,10 @@
 package com.example.mytestvk.presenter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import com.android.volley.Request
+import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.mytestvk.model.Product
@@ -15,7 +17,7 @@ import org.json.JSONObject
 
 class GetProducts (val uploadProductsView: IUploadedProductsView, val context: Context): IGetProducts{
     override fun loadProducts(page:Int) {
-        val skip = 20 * page
+        val skip = 20 * (page - 1)
         CoroutineScope(Dispatchers.IO).launch {
 //            delay(20000)
 
@@ -51,9 +53,9 @@ class GetProducts (val uploadProductsView: IUploadedProductsView, val context: C
                 productJS.getString("description"),
                 productJS.getString("thumbnail"))
 
-            listProducts.add(product)
-
+                listProducts.add(product)
         }
         uploadProductsView.loadProductsListSuccess(listProducts)
     }
+
 }

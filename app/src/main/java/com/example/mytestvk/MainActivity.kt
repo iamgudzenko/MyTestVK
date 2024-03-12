@@ -1,5 +1,8 @@
 package com.example.mytestvk
 
+import android.R.attr.fragment
+import android.R.attr.key
+import android.R.attr.value
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
@@ -33,7 +36,12 @@ class MainActivity : AppCompatActivity(), IUploadedProductsView {
 
         adapter = ProductAdapter(applicationContext, object : ProductActionListener{
             override fun goToProductInfo(product: Product) {
-                // тут будет переход к товару
+                Log.d("isClick2", product.id.toString())
+                if(savedInstanceState == null) {
+                    val myFragment = InfoProductFragment.newInstance(product.id)
+                    supportFragmentManager.beginTransaction().replace(R.id.infoProductFragm, myFragment).commit()
+                }
+
             }
 
         })
@@ -77,7 +85,7 @@ class MainActivity : AppCompatActivity(), IUploadedProductsView {
 
         }
 
-        if(page == 4) {
+        if(page == 5) {
             binding.nextPageButton.visibility = View.GONE
         } else {
             binding.nextPageButton.visibility = View.VISIBLE

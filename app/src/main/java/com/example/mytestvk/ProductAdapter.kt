@@ -3,6 +3,7 @@ package com.example.mytestvk
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,7 @@ class ProductAdapter(private val context: Context, private val actionListener: P
 
     override fun onClick(v: View) {
         val product = v.tag as Product
+        Log.d("isClick", product.id.toString())
         actionListener.goToProductInfo(product)
     }
 }
